@@ -27,7 +27,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.graphics.PorterDuff;
-//some other changes here
+//some other changes here haha
 public class ARView extends SurfaceView implements LocationListener,//ARSurfaceView is also a SurfaceView. It has a thread called 
 //ARThread, which is used to refresh the display of the AR Elements.
 SensorEventListener, SurfaceHolder.Callback{
