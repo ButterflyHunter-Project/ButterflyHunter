@@ -3,9 +3,7 @@ package com.android.AR;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Vector;
-
-import com.andoird.arp.R;
-
+import com.andoird.AR.R;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -40,6 +38,7 @@ SensorEventListener, SurfaceHolder.Callback{
 
 
 	public Location curLocation = null;
+	public Location fixed_location=null;
 	public float screenWidth=10;
 	public float screenHeight=5;
 	public PhoneData phonedata;
@@ -54,7 +53,7 @@ SensorEventListener, SurfaceHolder.Callback{
 	float y_axis;
 	float z_axis;
 	private boolean gpsUsable = false;
-	public boolean ifThreadRun=false;
+	public volatile boolean ifThreadRun=false;
 	//	private boolean locationChanged = false;
 	//	private boolean BeforeFirestGetLocation = true;
 	/*	public Integer[] mImageIds = { R.drawable.img1, R.drawable.img2,
@@ -150,22 +149,7 @@ SensorEventListener, SurfaceHolder.Callback{
 		Location location=phonedata.location;
 		//Paint p = new Paint();
 		p.setColor(Color.WHITE);
-		
 		//For debug use only. Display the sensor data.
-		c.drawText(String.valueOf(ifThreadRun), 10, 50, p);
-		c.drawText("Latitude--" + String.valueOf(curLocation.getLatitude()), 10, 100, p);
-		c.drawText("Longitude--" + String.valueOf(curLocation.getLongitude()), 10, 150, p);
-		c.drawText("Altitue--" + String.valueOf(curLocation.getAltitude()), 10, 200, p);
-		c.drawText("Gravity0--" + String.valueOf(gravity[0]), 10, 250, p);
-		c.drawText("Gravity1--" + String.valueOf(gravity[1]), 10, 300, p);
-		c.drawText("Gravity2--" + String.valueOf(gravity[2]), 10, 350, p);
-		c.drawText("Geomagnetic0--" + String.valueOf(geomagnetic[0]), 10, 400, p);
-		c.drawText("Geomagnetic1--" + String.valueOf(geomagnetic[1]), 10, 450, p);
-		c.drawText("Geomagnetic2--" + String.valueOf(geomagnetic[2]), 10, 500, p);
-		c.drawText("Orientation0--" + String.valueOf(orientation[0]), 10, 550, p);
-		c.drawText("Orientation1--" + String.valueOf(orientation[1]), 10,600, p);
-		c.drawText("Orientation2--" + String.valueOf(orientation[2]), 10, 650, p);
-		
 		
 		Enumeration<ARElements> e = areContainer.elements();
 		if (areContainer.size() == 0)
@@ -212,7 +196,21 @@ SensorEventListener, SurfaceHolder.Callback{
 			} catch (Exception x1) {
 				Log.e("ArLayout", x1.getMessage());
 			}
-		}		
+		}
+		c.drawText(String.valueOf(ifThreadRun), 10, 50, p);
+		c.drawText("Latitude--" + String.valueOf(curLocation.getLatitude()), 10, 100, p);
+		c.drawText("Longitude--" + String.valueOf(curLocation.getLongitude()), 10, 150, p);
+		c.drawText("Altitue--" + String.valueOf(curLocation.getAltitude()), 10, 200, p);
+		c.drawText("Gravity0--" + String.valueOf(gravity[0]), 10, 250, p);
+		c.drawText("Gravity1--" + String.valueOf(gravity[1]), 10, 300, p);
+		c.drawText("Gravity2--" + String.valueOf(gravity[2]), 10, 350, p);
+		c.drawText("Geomagnetic0--" + String.valueOf(geomagnetic[0]), 10, 400, p);
+		c.drawText("Geomagnetic1--" + String.valueOf(geomagnetic[1]), 10, 450, p);
+		c.drawText("Geomagnetic2--" + String.valueOf(geomagnetic[2]), 10, 500, p);
+		c.drawText("Orientation0--" + String.valueOf(orientation[0]), 10, 550, p);
+		c.drawText("Orientation1--" + String.valueOf(orientation[1]), 10,600, p);
+		c.drawText("Orientation2--" + String.valueOf(orientation[2]), 10, 650, p);
+		c.drawText("Distance--" + String.valueOf(curLocation.distanceTo(fixed_location)), 10,700, p);
 		}
 		public void addMessage(String msg)
 		{
@@ -242,7 +240,7 @@ SensorEventListener, SurfaceHolder.Callback{
 				SensorManager.SENSOR_DELAY_FASTEST);
 		locMan = (LocationManager) AR_Context.getSystemService(Context.LOCATION_SERVICE);
 		// set the miniTime and miniDistance here
-		locMan.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1,this);
+		locMan.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10,this);
 		curLocation=locMan.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		if(curLocation==null)
 		{
@@ -252,7 +250,7 @@ SensorEventListener, SurfaceHolder.Callback{
 			temp_location.setAltitude(671);
 			curLocation = temp_location;
 		}
-
+		fixed_location=new Location(curLocation);
 		phonedata=new PhoneData(1,curLocation,0,0,0);
 		Bitmap picture;
 		ARElements element;
@@ -300,17 +298,11 @@ SensorEventListener, SurfaceHolder.Callback{
 		curLocation.setLatitude(location.getLatitude());
 		curLocation.setLongitude(location.getLongitude());
 		curLocation.setAltitude(location.getAltitude());
-		curLocation = location;
+		//curLocation = location;
 		phonedata.setPhoneData(orientation[0],curLocation,x_axis,y_axis,z_axis);
 		ifThreadRun=true;
 	}
 	public void onSensorChanged(SensorEvent evt) {
-		float vals[] = evt.values;
-
-//		if (evt.sensor.getType() == Sensor.TYPE_ORIENTATION) {
-//			for(int i=0;i<3;i++)
-//				orientation[i]=evt.values[i];
-//		}
 		if (evt.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 			for(int i=0;i<3;i++)
 				gravity[i]=evt.values[i];
@@ -327,15 +319,6 @@ SensorEventListener, SurfaceHolder.Callback{
 		z_axis=Calculator.calRotationZ(gravity)	;
 		phonedata.setPhoneData(orientation[0],curLocation,x_axis,y_axis,z_axis);
 		ifThreadRun=true;
-//		if(orientation[1]>-10&&orientation[1]<10)//
-//			phonedata.setPhoneData(orientation[0]+orientation[1],curLocation,x_axis,y_axis,z_axis);
-//		else if(Math.abs(orientation[1])>10&&Math.abs(orientation[1])<20)
-//			phonedata.setPhoneData(orientation[0]+orientation[1]/2,curLocation,x_axis,y_axis,z_axis);
-//		else if(Math.abs(orientation[1])>=20&&Math.abs(orientation[1])<35)
-//			phonedata.setPhoneData(orientation[0]+orientation[1]/3,curLocation,x_axis,y_axis,z_axis);
-//		else if(Math.abs(orientation[1])>=35&&Math.abs(orientation[1])<50)
-//			phonedata.setPhoneData(orientation[0]+orientation[1]/4,curLocation,x_axis,y_axis,z_axis);
-//		else phonedata.setPhoneData(orientation[0],curLocation,x_axis,y_axis,z_axis);
 	}
 	public void onStatusChanged(String provider, int status, Bundle extras) 
 	{

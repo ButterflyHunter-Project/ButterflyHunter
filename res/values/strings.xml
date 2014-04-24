@@ -1,5 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, AR!</string>
-    <string name="app_name">HelloWorld_local</string>
+    <string
+        name="app_name">Butterfly Hunter!</string>
+    <string
+        name="splash">Splash Screen</string>
+    <string
+        name="settings">Settings Screen</string>
+    <string
+        name="game">Game Screen</string>
+    <string
+        name="scores">Scores Screen</string>
+    <string
+        name="help">Help Screen</string>
+    <string
+        name="app_logo_top">BEEN THERE</string>
+    <string
+        name="app_logo_bottom">DONE THAT!</string>
+    <string
+        name="app_version_info">Version 1.0.0\nCopyright © 2010 Mamlambo, Inc. All Rights Reserved.</string>
+    <string
+        name="menu">MAIN MENU</string>
+    <string
+        name="menu_item_settings">Settings</string>
+    <string
+        name="menu_item_play">Play Game</string>
+    <string
+        name="menu_item_scores">View Scores</string>
+    <string
+        name="menu_item_help">Help</string>
+    <string
+        name="all_scores">"All Scores"</string>
+    <string
+        name="friends_scores">"Scores of Friends"</string>
+    <string
+        name="no_scores">"No scores to show."</string>
+    <string
+        name="username">"Username"</string>
+    <string
+        name="rank">"Ranking"</string>
+    <string
+        name="score">"Score"</string>
+    <string
+        name="wait_msg">"Retrieving Scores..."</string>
+    <string
+        name="wait_title">"Loading..."</string>
 </resources>
