@@ -1,5 +1,9 @@
 package com.android.AR;
 //I just add some test text here
+import android.app.ActionBar;
+
+import com.android.AR.R;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -10,6 +14,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -18,17 +24,17 @@ import android.view.View.OnTouchListener;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.graphics.Point;
-public class Main extends Activity {//AR is an activity. AR includes two Surfaceview objects:CameraView and ARView. Basically an activity means a screen
+public class CameraActivity extends Activity {//AR is an activity. AR includes two Surfaceview objects:CameraView and ARView. Basically an activity means a screen
 	public CameraView cv;
 	private FrameLayout rl;
 	public static volatile Context ctx;
 	public ARView ar;//
 	private TextView tv;
-	private View upperlayer;
+	private View menu_layer;
 	volatile Location curLocation = null;
 	private int screenHeight;
 	private int screenWidth;
-	public static String information = "HaHaHa!";
+	public static String information = "Welcome to the world of Butterflys!";
 	/** Called when the activity is first created. */
 
 	@SuppressLint("NewApi")
@@ -65,7 +71,9 @@ public class Main extends Activity {//AR is an activity. AR includes two Surface
 		rl.addView(ar, screenWidth, screenHeight);//把各层view加到frameLayout上
 		rl.addView(cv, screenWidth, screenHeight);
 		rl.addView(tv);
-		//rl.addView(upperlayer);
+		//menu_layer = LayoutInflater.from(this).inflate(R.layout.menu_layer, null);
+		//rl.addView(menu_layer);
+		
 		setContentView(rl);
 //		ar.setOnTouchListener(new OnTouchListener()
 //		{
@@ -90,4 +98,17 @@ public class Main extends Activity {//AR is an activity. AR includes two Surface
 //
 //		});	
 	}
+	protected void onPause(){
+		super.onPause();
+	}
+	protected void onResume(){
+		super.onResume();
+	}
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu) {
+//	    // Inflate the menu items for use in the action bar
+//	    MenuInflater inflater = getMenuInflater();
+//	    inflater.inflate(R.layout.menu_layer, menu);
+//	    return super.onCreateOptionsMenu(menu);
+//	}
 }
