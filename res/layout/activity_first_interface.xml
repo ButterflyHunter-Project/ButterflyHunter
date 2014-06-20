@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/FirstInterfaceView"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/black"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/TextViewTopTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="115dp"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:gravity="top|center"
+        android:text="@string/app_logo_top"
+        android:textStyle="normal|bold|italic"
+        android:typeface="serif"
+        android:textColor="@color/logo_color"
+        android:textSize="@dimen/logo_size" >
+    </TextView>
+    
+    <!-- android:typeface="serif"
+    android:textStyle="normal|bold|italic"
+    
+     -->
+
+    <TableLayout
+        android:id="@+id/TableLayout01"
+        android:stretchColumns="*"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent">
+      <!--  
+        <ImageButton
+		    android:id="@+id/ImageButton"
+		    android:layout_width="@dimen/button_size"
+		    android:layout_height="@dimen/button_size"
+		    android:layout_marginTop="@dimen/button_size"
+		    android:background="@null"
+		    android:contentDescription="layout_empty"
+		    android:onClick="onSaveNewGateClick"
+		    android:scaleType="fitXY"
+		    android:src="@drawable/butterfly1" />
+        -->  
+        <TableRow
+            android:id="@+id/TableRow01"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal">
+            <ImageView
+                android:id="@+id/ImageView2_Left"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:src="@drawable/butterfly1"></ImageView>
+            <ImageView
+                android:id="@+id/ImageView2_Right"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:src="@drawable/butterfly2"></ImageView>
+            
+        </TableRow>
+        <TableRow
+            android:id="@+id/TableRow02"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal">
+            <ImageView
+                android:id="@+id/ImageView3_Left"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:src="@drawable/butterfly3"></ImageView>
+            <ImageView
+                android:id="@+id/ImageView3_Right"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:src="@drawable/butterfly4"></ImageView>
+        </TableRow>
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/TextViewBottomTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="125dp"
+        android:gravity="center"
+        android:text="@string/app_logo_bottom"
+        android:textColor="@color/logo_color"
+        android:textStyle="normal|bold|italic"
+        android:typeface="serif"
+        android:textSize="@dimen/logo_size" />
+    
+    <TextView
+        android:id="@+id/TextViewBottomVersion"
+        android:text="@string/app_version_info"
+        android:textSize="@dimen/version_size"
+        android:textColor="@color/version_color"
+        android:background="@color/version_bkgrd"
+        android:layout_height="fill_parent"
+        android:lineSpacingExtra="@dimen/version_spacing"
+        android:layout_width="fill_parent"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:gravity="center"></TextView>
+
+</LinearLayout>

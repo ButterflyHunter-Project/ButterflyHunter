@@ -33,10 +33,10 @@ public class CameraView extends SurfaceView //the regular camera view
 	
 		public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int w, int h)
 		{
-			Parameters params = camera.getParameters();
-			params.setPreviewSize(screenWidth, screenHeight);
-			params.setPictureFormat(ImageFormat.JPEG);
-	        camera.setParameters(params);
+			//Parameters params = camera.getParameters();
+			//params.setPreviewSize(screenWidth, screenHeight);
+			//params.setPictureFormat(ImageFormat.JPEG);
+	       // camera.setParameters(params);
 	        camera.startPreview();
 		}
 

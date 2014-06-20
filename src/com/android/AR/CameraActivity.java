@@ -2,7 +2,7 @@ package com.android.AR;
 //I just add some test text here
 import android.app.ActionBar;
 
-import com.android.AR.R;
+import com.android.R;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -12,6 +12,8 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,13 +38,15 @@ public class CameraActivity extends Activity {//AR is an activity. AR includes t
 	private int screenWidth;
 	public static String information = "Welcome to the world of Butterflys!";
 	/** Called when the activity is first created. */
-
+    WakeLock mWakeLock;
 	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		ctx = this.getApplicationContext();
+		final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "");
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);

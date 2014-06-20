@@ -4,10 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 
 public class Calculator {
-	public static double upperThreshold=1.06;
-	public static double lowerThreshold=0.94;
-	public static double xMoveThreshold=20;
-	public static double yMoveThreshold=10;
+	public static double upperThreshold=1.1;
+	public static double lowerThreshold=0.9;
+	public static double xMoveThreshold=0;
+	public static double yMoveThreshold=0;
 	/**
 	 * Determines whether a given point is inside a given rectangular area
 	 * 
@@ -107,9 +107,11 @@ public class Calculator {
 	public static float calPositionX(float orientation,float x_axis,float y_axis,float z_axis,float screen_width,float screen_height,float focal_width,float focal_height,float picture_width,float picture_height)
 	{//this function calculates the position of the ARE on the screen (x axis). x is the left low corner of the picture
 		float x;
-		x=-(orientation*2/focal_width)*screen_width/2+screen_width/2;
-		if(x>screen_width||x<-picture_width)
-			return 1001;
+		x=(orientation*2/focal_width)*screen_width/2+screen_width/2;
+		if(x>screen_width)
+			return 10001;
+		else if (x<-picture_width)
+			return -10001;
 		else return x;
 	}
 
@@ -117,8 +119,10 @@ public class Calculator {
 	{
 		float y;
 		y=((z_axis-vertical_offset)*2/focal_height)*screen_height/2+screen_height/2;
-		if(y>screen_height||y<-picture_height)
-			return 1001;
+		if(y>screen_height)
+			return 10001;
+		else if (y<-picture_height)
+			return -10001;
 		else 
 			return y;
 	}
@@ -138,7 +142,7 @@ public class Calculator {
 	}
 	public static boolean isPictureOutOfRange(float x,float y)
 	{
-		if(x>1000||y>1000)
+		if(Math.abs(x)>10000||Math.abs(y)>10000)
 			return true;
 		else return false;
 	}
