@@ -9,6 +9,7 @@ import java.util.Iterator;
 
 import com.android.R;
 
+import android.R.color;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -17,6 +18,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.PorterDuff.Mode;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -43,7 +45,7 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 	Paint mPaint = new Paint();	
 	public float screenWidth=10;
 	public float screenHeight=5;
-	
+
 	//these two parameters need to be updated for different models
 	private float xAngleWidth = 50f;
 	private float yAngleWidth = 40f;
@@ -54,7 +56,7 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 	public final int visible_range=100;//the range that the butterflys are visible
 
 	public volatile boolean ifThreadRun=false;
-    public SensorData sensor;
+	public SensorData sensor;
 
 	//ARThread
 	class ARThread extends Thread {
@@ -80,9 +82,10 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 					c = _holder.lockCanvas();
 					synchronized (_holder) {
 						if(c!=null)
-						{c.drawColor(0, Mode.CLEAR);
-						onDraw(c);
-						ifThreadRun=false;}
+						{
+							c.drawColor(0, Mode.CLEAR);
+							onDraw(c);
+							ifThreadRun=false;}
 					}
 				} 
 				finally {
@@ -136,17 +139,41 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 				{
 					if(picture_position_changed==true||picture_view_changed==true)
 					{			c.drawBitmap(element.resized_picture, x,y, null);
-					c.drawText(String.valueOf(element.distance), x, y, mPaint);
+
+					showInfoTab(x, y, c,element);
 					element.resized_picture = Calculator.transformImage(element.picture,element.width(), element.height(),rotation);
 					}
 					else
 					{	c.drawBitmap(element.resized_picture, element.x,element.y, null);
-					c.drawText(String.valueOf(element.distance), element.x, element.y, mPaint);}
+
+					showInfoTab(element.x, element.y, c,  element);
+					}
 					element.picture_changed=false;element.rotation=rotation;element.x=x;element.y=y;element.distance=distance;
 				}
 			} catch (Exception x1) {
 				Log.e("ArLayout", x1.getMessage());
 			}
+		}
+	}
+	public void showInfoTab(int x, int y, Canvas c, BF element){
+		if(element.isChecked){
+			Paint p=new Paint();
+			int delta=5;int text_height=40;int text_size=30;
+			int rect_width=300;int rect_height=3*text_height+delta;
+			int left=x+element.width()+delta;
+			int top=y-rect_height;
+			int right=left+rect_width;
+			int bottom=top+rect_height;
+			RectF rect=new RectF(left,top,right,bottom);
+			p.setColor(Color.LTGRAY);
+			c.drawRoundRect(rect,1,2,p);
+			p.setColor(Color.MAGENTA);
+			p.setTextSize(text_size);
+			c.drawText("Distance   "+String.valueOf(element.distance),left+delta,top+text_size+delta,p);
+			c.drawText("Type         "+String.valueOf(element.type),left+delta,top+delta+text_size+text_height,p);
+			c.drawText("Value        "+String.valueOf(element.value),left+delta,top+delta+text_size+2*text_height,p);
+
+
 		}
 	}
 	public ARView(Context context) {
@@ -166,14 +193,14 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 		loc1.setLatitude(sensor.curLocation.getLatitude()-0.0002);
 		loc1.setLongitude(sensor.curLocation.getLongitude());
 		loc1.setAltitude(sensor.curLocation.getAltitude());
-		element=new BF(AR_Context, loc1,picture) ;
+		element=new BF(AR_Context, loc1,picture,1) ;
 		element.picture_size = 1;
 		element.visible = true;
 		element.name = "first";
 		this.addBF(element);
 		loc1.setLatitude(sensor.curLocation.getLatitude());
 		loc1.setLongitude(sensor.curLocation.getLongitude()-0.0003);
-		element=new BF(AR_Context,loc1,picture) ;
+		element=new BF(AR_Context,loc1,picture,1) ;
 		element.picture_size = 1;
 		element.visible = true;
 		element.name = "second";
@@ -184,11 +211,11 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 
 
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,	int height) {}
+	
 	public void surfaceCreated(SurfaceHolder holder) {
 		// start the thread here so that we don't busy-wait in run()
 		// waiting for the surface to be created
 		setWillNotDraw(false);
-		//AR_thread=new ARThread(AR_holder,AR_Context);
 		AR_thread.setRunning(true);
 		AR_thread.start();
 	}
@@ -198,6 +225,7 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 	 * be touched. WARNING: after this method returns, the Surface/Canvas must
 	 * never be touched again!
 	 */
+
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		// we have to tell thread to shut down & wait for it to finish, or else
 		// it might touch the Surface after we return and explode
@@ -209,9 +237,9 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 	}
 
 
-	
 
-	
+
+
 	public int numOfBF(){return flyingList.size();}
 	public int numOfBFWithinRange(int radious){
 		int num=0;
@@ -229,12 +257,23 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 	public void generateBF(){
 		Random random=new Random();
 		int num=random.nextInt(7)+3;//number of butterflys to be generated
+
 		double lati,longi;
 		Bitmap picture;
 		BF element;
-		InputStream is =getResources().openRawResource(R.drawable.images);
-		picture = BitmapFactory.decodeStream(is);
+		InputStream is;
+		Bitmap [] pictures=new Bitmap[4];
+		is=getResources().openRawResource(R.drawable.butterfly1);
+		pictures[0] = BitmapFactory.decodeStream(is);
+		is=getResources().openRawResource(R.drawable.butterfly2);
+		pictures[1] = BitmapFactory.decodeStream(is);
+		is=getResources().openRawResource(R.drawable.butterfly3);
+		pictures[2] = BitmapFactory.decodeStream(is);
+		is=getResources().openRawResource(R.drawable.butterfly4);
+		pictures[3] = BitmapFactory.decodeStream(is);
 		for (int i=0;i<num;++i){
+			int BFNo=random.nextInt(4);
+			picture=pictures[BFNo];
 			lati=(2*random.nextDouble()-1)/2000;
 			longi=(2*random.nextDouble()-1)/2000;
 			if (Math.abs(lati)<0.00015) lati=0.0002;
@@ -243,7 +282,7 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 			loc1.setLatitude(sensor.curLocation.getLatitude()+lati);
 			loc1.setLongitude(sensor.curLocation.getLongitude()+longi);
 			loc1.setAltitude(sensor.curLocation.getAltitude());
-			element=new BF(AR_Context, loc1,picture) ;
+			element=new BF(AR_Context, loc1,picture,BFNo) ;
 			element.picture_size = 1;
 			element.visible = true;
 			this.addBF(element);
@@ -261,7 +300,6 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 	protected void onDestroy() {}
 	public void setAR_thread(ARThread aR_thread) {AR_thread = aR_thread;}
 	public ARThread getAR_thread() {return AR_thread;}
-
 
 }
 

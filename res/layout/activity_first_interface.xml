@@ -16,7 +16,7 @@
         android:textStyle="normal|bold|italic"
         android:typeface="serif"
         android:textColor="@color/logo_color"
-        android:textSize="@dimen/logo_size" >
+        android:textSize="@dimen/logo_size_medium" >
     </TextView>
     
     <!-- android:typeface="serif"
@@ -89,7 +89,7 @@
         android:textColor="@color/logo_color"
         android:textStyle="normal|bold|italic"
         android:typeface="serif"
-        android:textSize="@dimen/logo_size" />
+        android:textSize="@dimen/logo_size_small" />
     
     <TextView
         android:id="@+id/TextViewBottomVersion"

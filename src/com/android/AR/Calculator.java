@@ -89,14 +89,6 @@ public class Calculator {
 		double d=Math.abs(gravity[2])/Math.sqrt((gravity[0]*gravity[0]+gravity[1]*gravity[1]));
 		z_axis=(float)(Math.atan(d));
 		z_axis=z_axis*180/(float)Math.PI;
-		//	if(gravity[0]>0&&gravity[2]>0)//手机镜头朝下前方
-		//	z_axis=z_axis;
-		//	else if(gravity[0]>0&&gravity[2]<=0)//手机镜头上前方
-		//		z_axis=180-z_axis;
-		//	else if(gravity[0]<=0&&gravity[2]>0)//手机镜头后下方
-		//		z_axis=360-z_axis;
-		//	else
-		//		z_axis=180+z_axis;
 		if(gravity[2]>0)//
 			z_axis=90-z_axis;
 		else 

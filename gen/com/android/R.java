@@ -165,14 +165,16 @@ public final class R {
          */
         public static final int activity_horizontal_margin=0x7f050000;
         public static final int activity_vertical_margin=0x7f050001;
-        public static final int button_size=0x7f050009;
-        public static final int help_text_padding=0x7f050008;
-        public static final int help_text_size=0x7f050007;
+        public static final int button_size=0x7f05000b;
+        public static final int help_text_padding=0x7f05000a;
+        public static final int help_text_size=0x7f050009;
         public static final int logo_size=0x7f050002;
-        public static final int menu_item_size=0x7f050006;
-        public static final int screen_title_size=0x7f050005;
-        public static final int version_size=0x7f050003;
-        public static final int version_spacing=0x7f050004;
+        public static final int logo_size_medium=0x7f050003;
+        public static final int logo_size_small=0x7f050004;
+        public static final int menu_item_size=0x7f050008;
+        public static final int screen_title_size=0x7f050007;
+        public static final int version_size=0x7f050005;
+        public static final int version_spacing=0x7f050006;
     }
     public static final class drawable {
         public static final int bkgrnd=0x7f020000;

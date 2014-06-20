@@ -46,7 +46,8 @@ public class CameraActivity extends Activity {//AR is an activity. AR includes t
 		super.onCreate(savedInstanceState);
 		ctx = this.getApplicationContext();
 		final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-		this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "");
+		//PowerManager.WakeLock wl = pm.newWakeLock( PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, TAG); wl.acquire(); // ... wl.release(); 
+		//this.mWakeLock = pm.newWakeLock(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON , "");
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -79,31 +80,31 @@ public class CameraActivity extends Activity {//AR is an activity. AR includes t
 		//rl.addView(menu_layer);
 		
 		setContentView(rl);
-//		ar.setOnTouchListener(new OnTouchListener()
-//		{
-//			public boolean onTouch(View view, MotionEvent event) 
-//			{
-//				float npx = event.getX();  //get the coordinate of the touch area
-//				float npy = event.getY();
-//				if(event.getAction()==MotionEvent.ACTION_DOWN)
-//					for(int i=ar.arViews.size()-1;i>=0;i--)
-//					{
-//						if(Mathfunction.pointInRect(npx, npy,ar.arViews.get(i).x,ar.arViews.get(i).y, 
-//								ar.arViews.get(i).width(),  ar.arViews.get(i).height()))
-//						{
-//							information="the item you pick is "+i;
-//							tv.setText(information);
-//							upperlayer.setVisibility(0);
-//							break;
-//						}
-//					}
-//				return false;
-//			}
-//
-//		});	
+		ar.setOnTouchListener(new OnTouchListener()
+		{
+			public boolean onTouch(View view, MotionEvent event) 
+			{
+				float npx = event.getX();  //get the coordinate of the touch area
+				float npy = event.getY();
+				if(event.getAction()==MotionEvent.ACTION_DOWN)
+					for(int i=ar.flyingList.size()-1;i>=0;i--)
+					{
+						if(Calculator.pointInRect(npx, npy,ar.flyingList.get(i).x,ar.flyingList.get(i).y, 
+								ar.flyingList.get(i).width(),  ar.flyingList.get(i).height()))
+						{
+							
+							ar.flyingList.get(i).isChecked=!ar.flyingList.get(i).isChecked;
+							//break;
+						}
+					}
+				return false;
+			}
+
+		});	
 	}
 	protected void onPause(){
 		super.onPause();
+		//finish();
 	}
 	protected void onResume(){
 		super.onResume();

@@ -87,7 +87,7 @@ public class SensorData implements LocationListener,SensorEventListener{
 		arview.ifThreadRun=true;
 		BF.deviceLocation=curLocation;
 		arview.updateBFLists();
-		if (arview.numOfBFWithinRange(arview.visible_range)<1)
+		if (arview.numOfBFWithinRange(arview.visible_range)<2)
 			arview.generateBF();
 	}
 

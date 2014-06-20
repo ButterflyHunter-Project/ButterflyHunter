@@ -7,12 +7,23 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.app.Activity;
 
 import com.android.R;
 import com.android.AR.CameraActivity;
 
-public class MenuActivity extends MainActivity {
-
+public class MenuActivity extends Activity {
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+	}
+	
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+	}
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +56,6 @@ public class MenuActivity extends MainActivity {
 				String stringText = textView.getText().toString();
 				if(stringText.equalsIgnoreCase(getResources().getString(R.string.menu_item_play)))
 				{
-				//	startActivity(new Intent(MenuActivity.this, GameActivity.class));
 					startActivity(new Intent(MenuActivity.this,CameraActivity.class));
 				}
 				

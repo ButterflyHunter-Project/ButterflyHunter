@@ -16,7 +16,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import android.os.Build;
 import com.android.R;
-public class FirstInterfaceActivity extends MainActivity {
+public class FirstInterfaceActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
