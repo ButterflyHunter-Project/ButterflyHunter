@@ -20,6 +20,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnTouchListener;
@@ -37,6 +39,7 @@ public class CameraActivity extends Activity {//AR is an activity. AR includes t
 	private int screenHeight;
 	private int screenWidth;
 	public static String information = "Welcome to the world of Butterflys!";
+	private Point touch_point=new Point();
 	/** Called when the activity is first created. */
     WakeLock mWakeLock;
 	@SuppressLint("NewApi")
@@ -84,21 +87,58 @@ public class CameraActivity extends Activity {//AR is an activity. AR includes t
 		{
 			public boolean onTouch(View view, MotionEvent event) 
 			{
-				float npx = event.getX();  //get the coordinate of the touch area
-				float npy = event.getY();
-				if(event.getAction()==MotionEvent.ACTION_DOWN)
+				touch_point.x=(int)event.getX();
+				touch_point.y=(int)event.getY();
+				//float npx = event.getX();  //get the coordinate of the touch area
+				//float npy = event.getY();
+//				if(event.getAction()==MotionEvent.ACTION_DOWN)
+//					for(int i=ar.flyingList.size()-1;i>=0;i--)
+//					{
+//						if(Calculator.pointInRect(touch_point.x, touch_point.y,ar.flyingList.get(i).x,ar.flyingList.get(i).y, 
+//								ar.flyingList.get(i).width(),  ar.flyingList.get(i).height()))
+//						{
+//							
+//							ar.flyingList.get(i).isChecked=!ar.flyingList.get(i).isChecked;
+//							//break;
+//						}
+//					}
+				return false;
+			}
+
+		});	
+		
+		ar.setOnClickListener(new OnClickListener()
+		{
+
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				for(int i=ar.flyingList.size()-1;i>=0;i--)
+				{
+					if(Calculator.pointInRect(touch_point.x, touch_point.y,ar.flyingList.get(i).x,ar.flyingList.get(i).y, 
+							ar.flyingList.get(i).width(),  ar.flyingList.get(i).height()))
+					{						
+						ar.flyingList.get(i).isChecked=!ar.flyingList.get(i).isChecked;
+					}
+				}
+			}
+
+		});	
+		
+		ar.setOnLongClickListener (new OnLongClickListener()
+		{
+			public boolean onLongClick(View view) 
+			{
 					for(int i=ar.flyingList.size()-1;i>=0;i--)
 					{
-						if(Calculator.pointInRect(npx, npy,ar.flyingList.get(i).x,ar.flyingList.get(i).y, 
+						if(Calculator.pointInRect(touch_point.x, touch_point.y,ar.flyingList.get(i).x,ar.flyingList.get(i).y, 
 								ar.flyingList.get(i).width(),  ar.flyingList.get(i).height()))
-						{
-							
-							ar.flyingList.get(i).isChecked=!ar.flyingList.get(i).isChecked;
-							//break;
+						{							
+							ar.flyingList.get(i).isLongClicked=true;ar.ifUpdate=true;
 						}
 					}
 				return false;
 			}
+
 
 		});	
 	}

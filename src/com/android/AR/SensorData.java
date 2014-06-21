@@ -14,7 +14,7 @@ public class SensorData implements LocationListener,SensorEventListener{
 	public SensorManager sensorMan;
 	public LocationManager locMan;
 	public Location curLocation;
-	public PhoneData phonedata;
+	public volatile PhoneData phonedata;
 	public ARView arview;
 	int filterOrder=2;
 	float [][]hist_gravity=new float[filterOrder][3];
@@ -26,8 +26,8 @@ public class SensorData implements LocationListener,SensorEventListener{
 	float []new_orientation=new float[3];
 	float [] output=new float[3];
 	float [] coefficient=new float[5];
-	float x_axis,y_axis,z_axis;
-
+	volatile float x_axis,y_axis,z_axis;
+    
 	static final float ALPHA = 0.1f;
 	float[] Rot=new float[9];float[] I=new float[9];
 	protected float[] lowPass( float[] input, float[] output ) {
@@ -86,9 +86,10 @@ public class SensorData implements LocationListener,SensorEventListener{
 		phonedata.setPhoneData((float)(orientation[0]*180/Math.PI),curLocation,x_axis,y_axis,z_axis);
 		arview.ifThreadRun=true;
 		BF.deviceLocation=curLocation;
-		arview.updateBFLists();
-		if (arview.numOfBFWithinRange(arview.visible_range)<2)
-			arview.generateBF();
+		for (BF bf:arview.flyingList){
+			if(bf.getDistance()<arview.threshold_Close2BF)
+				{arview.ifUpdate=true;break;}
+		}
 	}
 
 	SensorData(Context AR_Context, ARView ar){
@@ -131,11 +132,11 @@ public class SensorData implements LocationListener,SensorEventListener{
 	
 	class PhoneData
 	{
-		public float device_orientation;
-		public Location location;
-		public float x_axis;
-		public float y_axis;
-		public float z_axis;
+		public volatile float device_orientation;
+		public volatile Location location;
+		public volatile float x_axis;
+		public volatile float y_axis;
+		public volatile float z_axis;
 		PhoneData(float device_orientation,Location location,float x_axis,float y_axis,float z_axis)
 		{
 			this.device_orientation=device_orientation;

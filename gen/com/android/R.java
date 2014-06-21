@@ -178,36 +178,34 @@ public final class R {
     }
     public static final class drawable {
         public static final int bkgrnd=0x7f020000;
-        public static final int butterfly1=0x7f020001;
-        public static final int butterfly2=0x7f020002;
-        public static final int butterfly3=0x7f020003;
-        public static final int butterfly4=0x7f020004;
-        public static final int butterflyicon=0x7f020005;
-        public static final int divider=0x7f020006;
-        public static final int divider1=0x7f020007;
-        public static final int ic_launcher=0x7f020008;
-        public static final int icon=0x7f020009;
-        public static final int images=0x7f02000a;
-        public static final int img1=0x7f02000b;
-        public static final int img10=0x7f02000c;
-        public static final int img11=0x7f02000d;
-        public static final int img13=0x7f02000e;
-        public static final int img14=0x7f02000f;
-        public static final int img15=0x7f020010;
-        public static final int img2=0x7f020011;
-        public static final int img3=0x7f020012;
-        public static final int img4=0x7f020013;
-        public static final int img5=0x7f020014;
-        public static final int img6=0x7f020015;
-        public static final int img7=0x7f020016;
-        public static final int img9=0x7f020017;
-        public static final int noquestion=0x7f020018;
-        public static final int quizicon=0x7f020019;
-        public static final int splash1=0x7f02001a;
-        public static final int splash2=0x7f02001b;
-        public static final int splash3=0x7f02001c;
-        public static final int splash4=0x7f02001d;
-        public static final int textured=0x7f02001e;
+        public static final int blue0=0x7f020001;
+        public static final int blue1=0x7f020002;
+        public static final int blue2=0x7f020003;
+        public static final int butterfly1=0x7f020004;
+        public static final int butterfly2=0x7f020005;
+        public static final int butterfly3=0x7f020006;
+        public static final int butterfly4=0x7f020007;
+        public static final int butterflyicon=0x7f020008;
+        public static final int divider=0x7f020009;
+        public static final int divider1=0x7f02000a;
+        public static final int five0=0x7f02000b;
+        public static final int five1=0x7f02000c;
+        public static final int five2=0x7f02000d;
+        public static final int ic_launcher=0x7f02000e;
+        public static final int icon=0x7f02000f;
+        public static final int noquestion=0x7f020010;
+        public static final int quizicon=0x7f020011;
+        public static final int red0=0x7f020012;
+        public static final int red1=0x7f020013;
+        public static final int red2=0x7f020014;
+        public static final int splash1=0x7f020015;
+        public static final int splash2=0x7f020016;
+        public static final int splash3=0x7f020017;
+        public static final int splash4=0x7f020018;
+        public static final int textured=0x7f020019;
+        public static final int yellow0=0x7f02001a;
+        public static final int yellow1=0x7f02001b;
+        public static final int yellow2=0x7f02001c;
     }
     public static final class id {
         public static final int FirstInterfaceView=0x7f090000;
@@ -239,7 +237,6 @@ public final class R {
         public static final int mainmenu=0x7f030003;
         public static final int menu=0x7f030004;
         public static final int menu_item=0x7f030005;
-        public static final int menu_layer=0x7f030006;
     }
     public static final class menu {
         public static final int first_interface=0x7f080000;

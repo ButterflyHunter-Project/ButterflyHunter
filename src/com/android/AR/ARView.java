@@ -40,7 +40,8 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 	private Context AR_Context;
 	private ARThread AR_thread;
 	private SurfaceHolder AR_holder;
-
+	public volatile boolean ifUpdate=false;
+	public volatile boolean ifGenerate=false;
 	private SurfaceHolder holder = null;
 	Paint mPaint = new Paint();	
 	public float screenWidth=10;
@@ -54,7 +55,6 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 
 	public final float threshold_Close2BF=15;
 	public final int visible_range=100;//the range that the butterflys are visible
-
 	public volatile boolean ifThreadRun=false;
 	public SensorData sensor;
 
@@ -80,9 +80,14 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 				c=null;
 				try {
 					c = _holder.lockCanvas();
+					BF.incTimer();
 					synchronized (_holder) {
 						if(c!=null)
 						{
+							if(ifUpdate)
+							{	updateBFLists();
+							if (numOfBFWithinRange(visible_range)<3)
+								generateBF();}
 							c.drawColor(0, Mode.CLEAR);
 							onDraw(c);
 							ifThreadRun=false;}
@@ -93,7 +98,7 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 						_holder.unlockCanvasAndPost(c);
 					}	
 				}				
-				try {sleep(1);} catch (Exception e) {}
+				try {sleep(100);} catch (Exception e) {}
 			}
 		}
 	}
@@ -120,15 +125,13 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 				scale=element.distance/distance;
 				rotation=y_axis;
 				if(Calculator.isPictureSizeOrRotationChanged(scale,y_axis))
-				{
-					picture_view_changed=true;
-				}
+				picture_view_changed=true;				
 				float tem_orientation=location.bearingTo(element.location)-device_orientation-90;
 				if (tem_orientation>180) tem_orientation=tem_orientation-360;
 				if (tem_orientation<-180) tem_orientation=tem_orientation+360;
 				element.orientation_2_element=tem_orientation;
-				x=(int) Calculator.calPositionX(element.orientation_2_element,x_axis,y_axis,z_axis,screenWidth,screenHeight,xAngleWidth,yAngleWidth,element.resized_picture.getWidth(),element.resized_picture.getHeight());
-				y= (int) Calculator.calPositionY(element.orientation_2_element,x_axis,y_axis,z_axis,element.vertical_offset,screenWidth,screenHeight,xAngleWidth,yAngleWidth,element.resized_picture.getWidth(),element.resized_picture.getHeight());
+				x=(int) Calculator.calPositionX(element.orientation_2_element,x_axis,y_axis,z_axis,screenWidth,screenHeight,xAngleWidth,yAngleWidth,element.resized_picture[BF.nextFrameNo()].getWidth(),element.resized_picture[BF.nextFrameNo()].getHeight());
+				y= (int) Calculator.calPositionY(element.orientation_2_element,x_axis,y_axis,z_axis,element.vertical_offset,screenWidth,screenHeight,xAngleWidth,yAngleWidth,element.resized_picture[BF.nextFrameNo()].getWidth(),element.resized_picture[BF.nextFrameNo()].getHeight());
 				if(Calculator.isPicturePositionChanged(x-element.x, y-element.y))
 				{picture_position_changed=true;}
 				if (Calculator.isPictureOutOfRange(x,y))
@@ -138,15 +141,15 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 				if (element.resized_picture != null)
 				{
 					if(picture_position_changed==true||picture_view_changed==true)
-					{			c.drawBitmap(element.resized_picture, x,y, null);
-
-					showInfoTab(x, y, c,element);
-					element.resized_picture = Calculator.transformImage(element.picture,element.width(), element.height(),rotation);
+					{		
+						element.resized_picture[BF.nextFrameNo()] = Calculator.transformImage(element.picture[BF.nextFrameNo()],element.width(BF.nextFrameNo()), element.height(BF.nextFrameNo()),rotation);
+						c.drawBitmap(element.resized_picture[BF.nextFrameNo()], x,y, null);
+						showInfoTab(x, y, c,element);
 					}
 					else
-					{	c.drawBitmap(element.resized_picture, element.x,element.y, null);
-
-					showInfoTab(element.x, element.y, c,  element);
+					{	
+						c.drawBitmap(element.resized_picture[BF.nextFrameNo()], element.x,element.y, null);
+						showInfoTab(element.x, element.y, c,  element);
 					}
 					element.picture_changed=false;element.rotation=rotation;element.x=x;element.y=y;element.distance=distance;
 				}
@@ -160,7 +163,7 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 			Paint p=new Paint();
 			int delta=5;int text_height=40;int text_size=30;
 			int rect_width=300;int rect_height=3*text_height+delta;
-			int left=x+element.width()+delta;
+			int left=x+element.width(BF.nextFrameNo())+delta;
 			int top=y-rect_height;
 			int right=left+rect_width;
 			int bottom=top+rect_height;
@@ -172,8 +175,6 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 			c.drawText("Distance   "+String.valueOf(element.distance),left+delta,top+text_size+delta,p);
 			c.drawText("Type         "+String.valueOf(element.type),left+delta,top+delta+text_size+text_height,p);
 			c.drawText("Value        "+String.valueOf(element.value),left+delta,top+delta+text_size+2*text_height,p);
-
-
 		}
 	}
 	public ARView(Context context) {
@@ -185,33 +186,26 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 		AR_thread=new ARThread(AR_holder,AR_Context);
 		sensor=new SensorData(context,this);
 		BF.deviceLocation=sensor.curLocation;
-		Bitmap picture;
-		BF element;
-		InputStream is1 =getResources().openRawResource(R.drawable.images);
-		picture = BitmapFactory.decodeStream(is1);
-		Location loc1=new Location("GPS");
-		loc1.setLatitude(sensor.curLocation.getLatitude()-0.0002);
-		loc1.setLongitude(sensor.curLocation.getLongitude());
-		loc1.setAltitude(sensor.curLocation.getAltitude());
-		element=new BF(AR_Context, loc1,picture,1) ;
-		element.picture_size = 1;
-		element.visible = true;
-		element.name = "first";
-		this.addBF(element);
-		loc1.setLatitude(sensor.curLocation.getLatitude());
-		loc1.setLongitude(sensor.curLocation.getLongitude()-0.0003);
-		element=new BF(AR_Context,loc1,picture,1) ;
-		element.picture_size = 1;
-		element.visible = true;
-		element.name = "second";
-		this.addBF(element);
-		catchBF(element);
+		//		Bitmap picture;
+		//		BF element;
+		//		InputStream is1 =getResources().openRawResource(R.drawable.images);
+		//		picture = BitmapFactory.decodeStream(is1);
+		//		Location loc1=new Location("GPS");
+		//		loc1.setLatitude(sensor.curLocation.getLatitude()-0.0002);
+		//		loc1.setLongitude(sensor.curLocation.getLongitude());
+		//		loc1.setAltitude(sensor.curLocation.getAltitude());
+		//		element=new BF(AR_Context, loc1,picture,1) ;
+		//		element.picture_size = 1;
+		//		element.visible = true;
+		//		element.name = "first";
+		//		this.addBF(element);
+		generateBF();
 		//onDraw(canvas);
 	}
 
 
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,	int height) {}
-	
+
 	public void surfaceCreated(SurfaceHolder holder) {
 		// start the thread here so that we don't busy-wait in run()
 		// waiting for the surface to be created
@@ -249,48 +243,77 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 		return num;
 	}
 	public void updateBFLists(){//update both the flying and cathed lists
-		for (BF bf:flyingList){
-			if(bf.getDistance()<threshold_Close2BF)
-				catchBF(bf);
-		}
+		BF bf;
+		if (flyingList!=null)
+			if (flyingList.size()!=0)
+				for (int i=0;i<flyingList.size();++i){
+					bf=flyingList.get(i);
+					if(bf.isLongClicked)
+						catchBF(bf);
+					else if(bf.getDistance()<threshold_Close2BF)
+						catchBF(bf);
+				}
 	}
 	public void generateBF(){
 		Random random=new Random();
-		int num=random.nextInt(7)+3;//number of butterflys to be generated
-
+		int num=random.nextInt(2)+3;//number of butterflys to be generated
 		double lati,longi;
-		Bitmap picture;
+		Bitmap[] frames=new Bitmap[3];
 		BF element;
 		InputStream is;
-		Bitmap [] pictures=new Bitmap[4];
-		is=getResources().openRawResource(R.drawable.butterfly1);
+		Bitmap [] pictures=new Bitmap[12];
+		is=getResources().openRawResource(R.drawable.blue0);
 		pictures[0] = BitmapFactory.decodeStream(is);
-		is=getResources().openRawResource(R.drawable.butterfly2);
+		is=getResources().openRawResource(R.drawable.blue1);
 		pictures[1] = BitmapFactory.decodeStream(is);
-		is=getResources().openRawResource(R.drawable.butterfly3);
+		is=getResources().openRawResource(R.drawable.blue2);
 		pictures[2] = BitmapFactory.decodeStream(is);
-		is=getResources().openRawResource(R.drawable.butterfly4);
+		
+		is=getResources().openRawResource(R.drawable.red0);
 		pictures[3] = BitmapFactory.decodeStream(is);
+		is=getResources().openRawResource(R.drawable.red1);
+		pictures[4] = BitmapFactory.decodeStream(is);
+		is=getResources().openRawResource(R.drawable.red2);
+		pictures[5] = BitmapFactory.decodeStream(is);
+
+		is=getResources().openRawResource(R.drawable.red0);
+		pictures[6] = BitmapFactory.decodeStream(is);
+		is=getResources().openRawResource(R.drawable.red1);
+		pictures[7] = BitmapFactory.decodeStream(is);
+		is=getResources().openRawResource(R.drawable.red2);
+		pictures[8] = BitmapFactory.decodeStream(is);
+		
+		is=getResources().openRawResource(R.drawable.five0);
+		pictures[9] = BitmapFactory.decodeStream(is);
+		is=getResources().openRawResource(R.drawable.five1);
+		pictures[10] = BitmapFactory.decodeStream(is);
+		is=getResources().openRawResource(R.drawable.five2);
+		pictures[11] = BitmapFactory.decodeStream(is);
+
 		for (int i=0;i<num;++i){
 			int BFNo=random.nextInt(4);
-			picture=pictures[BFNo];
-			lati=(2*random.nextDouble()-1)/2000;
+			for(int j=0;j<3;++j)
+			frames[j]=pictures[BFNo*3+j];
+			
+			lati=(2*random.nextDouble()-1)/3000;
 			longi=(2*random.nextDouble()-1)/2000;
-			if (Math.abs(lati)<0.00015) lati=0.0002;
-			if (Math.abs(longi)<0.0002) longi=0.0002;
+			if (Math.abs(lati)<0.00015) lati=0.00015;
+			if (Math.abs(longi)<0.0002) longi=0.00015;
 			Location loc1=new Location("GPS");
 			loc1.setLatitude(sensor.curLocation.getLatitude()+lati);
-			loc1.setLongitude(sensor.curLocation.getLongitude()+longi);
+			loc1.setLongitude(sensor.curLocation.getLongitude());
 			loc1.setAltitude(sensor.curLocation.getAltitude());
-			element=new BF(AR_Context, loc1,picture,BFNo) ;
+			element=new BF(AR_Context, loc1,frames,BFNo) ;
 			element.picture_size = 1;
 			element.visible = true;
 			this.addBF(element);
 		}
 	}
 	public void catchBF(BF bf){
-		flyingList.remove(bf);
-		catchedList.add(bf);
+		if(flyingList!=null&&catchedList!=null)
+		{	if(flyingList.contains(bf))
+			flyingList.remove(bf);
+		catchedList.add(bf);}
 	}
 
 	public void addBF(BF element) {flyingList.add(element);}

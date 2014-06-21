@@ -4,22 +4,11 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 
 public class Calculator {
-	public static double upperThreshold=1.1;
+	public static double upperThreshold=1.1;//
 	public static double lowerThreshold=0.9;
 	public static double xMoveThreshold=0;
 	public static double yMoveThreshold=0;
-	/**
-	 * Determines whether a given point is inside a given rectangular area
-	 * 
-	 * @param pointX x-coordinate of point 
-	 * @param pointY y-coordinate of point
-	 * @param x x-coordinate of rectangular area
-	 * @param y y-coordinate of rectangular area
-	 * @param width width of the rectangular area
-	 * @param height height of the rectangular area
-	 * 
-	 * @return TRUE if point is inside the rectangular area, FALSE otherwise
-	 */
+
 	public static boolean pointInRect(float pointX, float pointY, int x, int y, float width, float height) {
 		if(pointX < x || pointY < y || pointX > x + width || pointY > y + height) {
 			return false;
@@ -27,20 +16,7 @@ public class Calculator {
 			return true;
 		}
 	}
-	
-	/**
-	 * Determines whether two rectangles overlap
-	 * 
-	 * @param rect1X1 top-left x-coordinate of rectangle A
-	 * @param rect1Y1 top-left y-coordinate of rectangle A
-	 * @param rect1X2 bottom-right x-coordinate of rectangle A
-	 * @param rect1Y2 bottom-right y-coordinate of rectangle A
-	 * @param rect2X1 top-left x-coordinate of rectangle B
-	 * @param rect2Y1 top-left y-coordinate of rectangle B
-	 * @param rect2X2 bottom-right x-coordinate of rectangle A
-	 * @param rect2Y2 bottom-right y-coordinate of rectangle B
-	 * @return
-	 */
+
 	public static boolean rectOverlap(float rect1X1, float rect1Y1, float rect1X2, float rect1Y2, float rect2X1, float rect2Y1, float rect2X2, float rect2Y2) {
 		return rect1X1 < rect2X2 && rect1X2 > rect2X1 && rect1Y1 < rect2Y2 && rect1Y2 > rect2Y1;
 	}
