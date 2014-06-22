@@ -20,7 +20,7 @@
         </activity>
         <activity android:name=".butterflygui.MenuActivity" >
         </activity>
-        <activity android:name=".AR.CameraActivity" >
+        <activity android:name=".AR.CameraActivity" android:parentActivityName="com.android.butterflygui.FirstInterfaceActivity">
         </activity>
     </application>
 
