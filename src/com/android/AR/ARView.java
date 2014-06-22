@@ -38,7 +38,7 @@ import android.graphics.PorterDuff;
 public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSurfaceView is also a SurfaceView. It has a thread called 
 	//ARThread, which is used to refresh the display of the AR Elements.
 	private Context AR_Context;
-	private ARThread AR_thread;
+	public ARThread AR_thread;
 	private SurfaceHolder AR_holder;
 	public volatile boolean ifUpdate=false;
 	public volatile boolean ifGenerate=false;
@@ -59,7 +59,7 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 	public SensorData sensor;
 
 	//ARThread
-	class ARThread extends Thread {
+	public class ARThread extends Thread {
 		private SurfaceHolder _holder=null;
 		private Context _context;
 		public ARThread(SurfaceHolder surfaceHolder, Context context)
@@ -76,7 +76,7 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 		@Override
 		public void run() {
 			Canvas c;
-			while (true) {
+			while (ifThreadRun) {
 				c=null;
 				try {
 					c = _holder.lockCanvas();
@@ -90,7 +90,7 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 								generateBF();}
 							c.drawColor(0, Mode.CLEAR);
 							onDraw(c);
-							ifThreadRun=false;}
+							}
 					}
 				} 
 				finally {
@@ -226,6 +226,7 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 		try{
 			AR_thread.setRunning(false);
 			AR_thread.join();
+			AR_thread.interrupt();
 		}
 		catch(InterruptedException e){}
 	}

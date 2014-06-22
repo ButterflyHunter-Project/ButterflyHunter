@@ -15,7 +15,9 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import android.os.Build;
+
 import com.android.R;
+import com.android.AR.CameraActivity;
 public class FirstInterfaceActivity extends Activity {
 
 	@Override
@@ -41,7 +43,7 @@ public class FirstInterfaceActivity extends Activity {
 		   case MotionEvent.ACTION_DOWN:
 		   {
 			   //不要忘记在androidManifest中注册activity
-			startActivity(new Intent(FirstInterfaceActivity.this, MenuActivity.class));
+			startActivity(new Intent(FirstInterfaceActivity.this, CameraActivity.class));
 			// Toast.makeText(FirstInterfaceActivity.this, "Action down pressed", Toast.LENGTH_SHORT).show();
 		    break;
 		   }

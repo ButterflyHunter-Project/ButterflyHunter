@@ -75,7 +75,7 @@ public class SensorData implements LocationListener,SensorEventListener{
 		y_axis=Calculator.calRatationY(gravity)	;
 		z_axis=Calculator.calRotationZ(gravity)	;
 		phonedata.setPhoneData((float)(orientation[0]*180/Math.PI),curLocation,x_axis,y_axis,z_axis);
-		arview.ifThreadRun=true;
+		//arview.ifThreadRun=true;
 	}
 	
 	
@@ -84,7 +84,7 @@ public class SensorData implements LocationListener,SensorEventListener{
 		curLocation.setLongitude(location.getLongitude());
 		curLocation.setAltitude(location.getAltitude());
 		phonedata.setPhoneData((float)(orientation[0]*180/Math.PI),curLocation,x_axis,y_axis,z_axis);
-		arview.ifThreadRun=true;
+		//arview.ifThreadRun=true;
 		BF.deviceLocation=curLocation;
 		for (BF bf:arview.flyingList){
 			if(bf.getDistance()<arview.threshold_Close2BF)

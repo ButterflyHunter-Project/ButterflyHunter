@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,13 +36,13 @@ public class CameraActivity extends Activity {//AR is an activity. AR includes t
 	public ARView ar;//
 	private TextView tv;
 	private View menu_layer;
-	volatile Location curLocation = null;
+	//volatile Location curLocation = null;
 	private int screenHeight;
 	private int screenWidth;
-	public static String information = "Welcome to the world of Butterflys!";
+	//public static String information = "Welcome to the world of Butterflys!";
 	private Point touch_point=new Point();
 	/** Called when the activity is first created. */
-    WakeLock mWakeLock;
+	WakeLock mWakeLock;
 	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -57,8 +58,6 @@ public class CameraActivity extends Activity {//AR is an activity. AR includes t
 		cv = new CameraView(ctx);//The camera is set up now!
 
 		ar = new ARView(ctx);
-		tv = new TextView(this);
-		tv.setText(information);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		WindowManager w = getWindowManager();
 
@@ -78,10 +77,9 @@ public class CameraActivity extends Activity {//AR is an activity. AR includes t
 		rl = new FrameLayout(getApplicationContext());
 		rl.addView(ar, screenWidth, screenHeight);//把各层view加到frameLayout上
 		rl.addView(cv, screenWidth, screenHeight);
-		rl.addView(tv);
 		//menu_layer = LayoutInflater.from(this).inflate(R.layout.menu_layer, null);
 		//rl.addView(menu_layer);
-		
+
 		setContentView(rl);
 		ar.setOnTouchListener(new OnTouchListener()
 		{
@@ -89,24 +87,11 @@ public class CameraActivity extends Activity {//AR is an activity. AR includes t
 			{
 				touch_point.x=(int)event.getX();
 				touch_point.y=(int)event.getY();
-				//float npx = event.getX();  //get the coordinate of the touch area
-				//float npy = event.getY();
-//				if(event.getAction()==MotionEvent.ACTION_DOWN)
-//					for(int i=ar.flyingList.size()-1;i>=0;i--)
-//					{
-//						if(Calculator.pointInRect(touch_point.x, touch_point.y,ar.flyingList.get(i).x,ar.flyingList.get(i).y, 
-//								ar.flyingList.get(i).width(),  ar.flyingList.get(i).height()))
-//						{
-//							
-//							ar.flyingList.get(i).isChecked=!ar.flyingList.get(i).isChecked;
-//							//break;
-//						}
-//					}
 				return false;
 			}
 
 		});	
-		
+
 		ar.setOnClickListener(new OnClickListener()
 		{
 
@@ -123,19 +108,19 @@ public class CameraActivity extends Activity {//AR is an activity. AR includes t
 			}
 
 		});	
-		
+
 		ar.setOnLongClickListener (new OnLongClickListener()
 		{
 			public boolean onLongClick(View view) 
 			{
-					for(int i=ar.flyingList.size()-1;i>=0;i--)
-					{
-						if(Calculator.pointInRect(touch_point.x, touch_point.y,ar.flyingList.get(i).x,ar.flyingList.get(i).y, 
-								ar.flyingList.get(i).width(),  ar.flyingList.get(i).height()))
-						{							
-							ar.flyingList.get(i).isLongClicked=true;ar.ifUpdate=true;
-						}
+				for(int i=ar.flyingList.size()-1;i>=0;i--)
+				{
+					if(Calculator.pointInRect(touch_point.x, touch_point.y,ar.flyingList.get(i).x,ar.flyingList.get(i).y, 
+							ar.flyingList.get(i).width(),  ar.flyingList.get(i).height()))
+					{							
+						ar.flyingList.get(i).isLongClicked=true;ar.ifUpdate=true;
 					}
+				}
 				return false;
 			}
 
@@ -144,16 +129,45 @@ public class CameraActivity extends Activity {//AR is an activity. AR includes t
 	}
 	protected void onPause(){
 		super.onPause();
+		ar.AR_thread.setRunning(false);
+		//ar.AR_thread.join();
+		ar.AR_thread.interrupt();
 		//finish();
 	}
 	protected void onResume(){
 		super.onResume();
 	}
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//	    // Inflate the menu items for use in the action bar
-//	    MenuInflater inflater = getMenuInflater();
-//	    inflater.inflate(R.layout.menu_layer, menu);
-//	    return super.onCreateOptionsMenu(menu);
-//	}
+	
+	protected void onDestroy(){
+		super.onDestroy();
+	}
+	//	@Override
+	//	public boolean onKeyDown(int keyCode, KeyEvent event)  {
+	//	    if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ECLAIR
+	//	            && keyCode == KeyEvent.KEYCODE_BACK
+	//	            && event.getRepeatCount() == 0) {
+	//	        // Take care of calling this method on earlier versions of
+	//	        // the platform where it doesn't exist.
+	//	        onBackPressed();
+	//	        return true;
+	//	    }
+	//
+	//	    return super.onKeyDown(keyCode, event);
+	//	}
+	@Override
+	public void onBackPressed() {
+		// your code.
+		super.onBackPressed();
+		ar.AR_thread.setRunning(false);
+		//ar.AR_thread.join();
+		ar.AR_thread.interrupt();
+		return;
+	}
+	//	@Override
+	//	public boolean onCreateOptionsMenu(Menu menu) {
+	//	    // Inflate the menu items for use in the action bar
+	//	    MenuInflater inflater = getMenuInflater();
+	//	    inflater.inflate(R.layout.menu_layer, menu);
+	//	    return super.onCreateOptionsMenu(menu);
+	//	}
 }
