@@ -147,7 +147,6 @@ public class BF extends View {//defines the Butterfly on the camera view
 	
 	public static int nextFrameNo(){
 		return(timer);
-		return;
 	}
 	
 }
