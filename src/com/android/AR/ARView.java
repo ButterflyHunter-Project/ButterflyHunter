@@ -106,7 +106,7 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 	protected void onDraw(Canvas c) //calculate the parameters
 	//to display the AR element (rotation, etc.) Orientation  -the angle between the north and the y axis of the phone. location  -the 
 	// the location of the phone. x_axis  -the rotation angle of the phone x axis
-	{						
+	{					
 		float x_axis=sensor.phonedata.x_axis;float y_axis=sensor.phonedata.y_axis;float z_axis=sensor.phonedata.z_axis;
 		float device_orientation=sensor.phonedata.device_orientation;
 		Location location=sensor.phonedata.location;
