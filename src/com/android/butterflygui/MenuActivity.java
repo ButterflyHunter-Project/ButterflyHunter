@@ -40,10 +40,10 @@ public class MenuActivity extends Activity {
      
        menulist.setAdapter(adapt); 
         
-        //menulist.setSelection(0); //无法看到
+        //menulist.setSelection(0); 
        
    //  menulist.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-   //     menulist.setItemChecked(1, true);////也不行
+   //     menulist.setItemChecked(1, true);
        
    //     menulist.setSelector(R.string.menu_item_scores);
         

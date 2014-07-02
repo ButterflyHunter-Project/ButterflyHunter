@@ -2,11 +2,14 @@ package com.android.AR;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-
+/*
+ *The Calculator class provides static functions to calculate parameters to display the butterflies, i.e, the position
+ *to be displayed on the screen, the size and rotation of the butterflies. 
+ * */
 public class Calculator {
-	public static double upperThreshold=1.1;//
+	public static double upperThreshold=1.1;//if the new size of the image exceeds the upperThreshold, update the image.
 	public static double lowerThreshold=0.9;
-	public static double xMoveThreshold=0;
+	public static double xMoveThreshold=0;//if the position change of the butterfly exceeds this threshold, reDraw the butterfly
 	public static double yMoveThreshold=0;
 
 	public static boolean pointInRect(float pointX, float pointY, int x, int y, float width, float height) {
@@ -46,20 +49,14 @@ public class Calculator {
 		double d=Math.abs(gravity[1])/Math.sqrt((gravity[0]*gravity[0]+gravity[2]*gravity[2]));
 		y_axis=(float)(Math.atan(d));
 		y_axis=y_axis*180/(float)Math.PI;
-		//	if(gravity[1]>0&&gravity[2]>0)//手机镜头朝左上方
-		//	y_axis=360-y_axis;
-		//	else if(gravity[1]>0&&gravity[2]<=0)//手机镜头右下方
-		//		y_axis=180+y_axis;
 		if(gravity[1]<=0&&gravity[2]>0)//
 			y_axis=y_axis;
 		if(gravity[1]>0)
 			y_axis=-y_axis;
-		//	else
-		//		y_axis=180-y_axis;
 		return y_axis;
 	}
 
-	public static float calRotationZ(float gravity[])//计算手机z轴与水平方向的夹角
+	public static float calRotationZ(float gravity[])
 	{
 		float z_axis=0;
 		double d=Math.abs(gravity[2])/Math.sqrt((gravity[0]*gravity[0]+gravity[1]*gravity[1]));
@@ -117,7 +114,7 @@ public class Calculator {
 
 
 	public static Bitmap transformImage(Bitmap mBitmap, double new_width,
-			double new_height,float degrees) {
+			double new_height,float degrees) {//Generate a new image with new size and rotation based on the input image
 		int mBitmap_height = mBitmap.getHeight();
 		int mBitmap_width = mBitmap.getWidth();
 		float scaleWidth = 0;

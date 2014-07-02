@@ -1,5 +1,4 @@
 package com.android.AR;
-//
 import android.R.color;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -9,24 +8,26 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.location.Location;
 import android.view.View;
-
-public class BF extends View {//defines the Butterfly on the camera view
+/*
+ Class BF defines a butterfly object to be displayed on the ARView.
+ */
+public class BF extends View {
 	public BFType type;//The type of the butterfly. e.g a blue butterfly
-	public volatile Location location;//current location of the ARE
-	public volatile static Location deviceLocation;
+	public volatile Location location;//current location of the butterfly
+	public volatile static Location deviceLocation;//location of the phone
 	public volatile boolean visible = false;
 	public String name = null;
-	public Bitmap picture[] = new Bitmap[3];
+	public Bitmap picture[] = new Bitmap[3];//3 pictures to play an animation
 	public Bitmap[] resized_picture = new Bitmap[3];
-	public int size=20;//set the initial size of the ARE meaning when distance=size, the ARE will be displayed in default size
+	public int size=20;//set the initial size of the butterfly meaning when distance=size, the butterfly will be displayed in default size
 	public volatile int x=0;//the x axis of the picture on the screen
 	public volatile int y=0;	
-	public float ini_rotation=0;//the initial rotation of the ARE
-	public float rotation=0;//the current rotation of the ARE
-	public float ini_distance=1000;//the initial rotation of the ARE
-	public float distance=1000;//the current rotation of the ARE
-	public volatile float vertical_offset=0;
-	public volatile float orientation_2_element=0;
+	public float ini_rotation=0;//the initial rotation of the butterfly
+	public float rotation=0;//the current rotation of the butterfly
+	public float ini_distance=1000;//the initial distance of the butterfly to the phone
+	public float distance=1000;//the current distance of the butterfly
+	public volatile float vertical_offset=0;//the vertial offset of the butterfly on the phone screen
+	public volatile float orientation_2_element=0;//the orientation of the phone to the butterfly
 	public boolean picture_view_changed = false;
 	public boolean picture_position_changed = false;//
 	public double picture_size = -1;//
@@ -35,7 +36,8 @@ public class BF extends View {//defines the Butterfly on the camera view
 	public boolean isLongClicked=false;//if the user long click the BF, remove it
 	public int value=0;
 	private static int timer=0;
-	public static void incTimer()
+	
+	public static void incTimer()//the timer is used to animate the butterfly
 	{timer++;
 	 timer=timer>2?0:timer;
 	}
@@ -145,7 +147,7 @@ public class BF extends View {//defines the Butterfly on the camera view
 		return t;
 	}
 	
-	public static int nextFrameNo(){
+	public static int nextFrameNo(){//get the next frame number of the animation
 		return(timer);
 	}
 	

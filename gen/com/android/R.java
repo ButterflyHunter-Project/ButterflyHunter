@@ -213,30 +213,32 @@ public final class R {
         public static final int ImageView2_Right=0x7f090005;
         public static final int ImageView3_Left=0x7f090007;
         public static final int ImageView3_Right=0x7f090008;
-        public static final int ImageView_MenuHeader=0x7f09000f;
-        public static final int ImageView_MenuHeader2=0x7f090011;
-        public static final int ListView_Menu=0x7f090013;
-        public static final int RelativeLayout01=0x7f09000e;
-        public static final int RelativeLayout02=0x7f090012;
+        public static final int ImageView_MenuHeader=0x7f090010;
+        public static final int ImageView_MenuHeader2=0x7f090012;
+        public static final int ListView_Menu=0x7f090014;
+        public static final int RelativeLayout01=0x7f09000f;
+        public static final int RelativeLayout02=0x7f090013;
         public static final int TableLayout01=0x7f090002;
         public static final int TableRow01=0x7f090003;
         public static final int TableRow02=0x7f090006;
-        public static final int TextView01=0x7f090010;
+        public static final int TextView01=0x7f090011;
         public static final int TextViewBottomTitle=0x7f090009;
         public static final int TextViewBottomVersion=0x7f09000a;
         public static final int TextViewTopTitle=0x7f090001;
-        public static final int action_settings=0x7f090014;
-        public static final int btn_enter=0x7f09000d;
-        public static final int button=0x7f09000c;
-        public static final int text=0x7f09000b;
+        public static final int action_settings=0x7f090015;
+        public static final int btn_enter=0x7f09000e;
+        public static final int button=0x7f09000d;
+        public static final int button1=0x7f09000b;
+        public static final int text=0x7f09000c;
     }
     public static final class layout {
         public static final int activity_first_interface=0x7f030000;
-        public static final int fragment_first_interface=0x7f030001;
-        public static final int main=0x7f030002;
-        public static final int mainmenu=0x7f030003;
-        public static final int menu=0x7f030004;
-        public static final int menu_item=0x7f030005;
+        public static final int camera_menu=0x7f030001;
+        public static final int fragment_first_interface=0x7f030002;
+        public static final int main=0x7f030003;
+        public static final int mainmenu=0x7f030004;
+        public static final int menu=0x7f030005;
+        public static final int menu_item=0x7f030006;
     }
     public static final class menu {
         public static final int first_interface=0x7f080000;

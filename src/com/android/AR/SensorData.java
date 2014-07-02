@@ -9,7 +9,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-
+/*
+ * the SensorData class is responsible for handling the phone sensors. It gets the updates of data
+ * from GPS, accelerometer and the magnetic field sensor. It also filters the data and produce the reliable version.
+ * */
 public class SensorData implements LocationListener,SensorEventListener{
 	public SensorManager sensorMan;
 	public LocationManager locMan;
@@ -52,21 +55,17 @@ public class SensorData implements LocationListener,SensorEventListener{
 		}
 		histData[0]=newData;
 	}
-	public void onSensorChanged(SensorEvent evt) {
-		//		
+	public void onSensorChanged(SensorEvent evt) {	
 		if (evt.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-			gravity = lowPass(evt.values, gravity);
-			
+			gravity = lowPass(evt.values, gravity);			
 			//updateHistoryData(evt.values,hist_gravity);
-			//gravity=highOrderLowPass(hist_gravity);
-			
+			//gravity=highOrderLowPass(hist_gravity);	
 		} 
 		
 		if (evt.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 			geomagnetic = lowPass(evt.values, geomagnetic);
 			//updateHistoryData(evt.values,hist_geomagnetic);
 			//geomagnetic=highOrderLowPass(hist_geomagnetic);
-
 		}
 		SensorManager.getRotationMatrix(Rot, I, gravity, geomagnetic);
 		SensorManager.getOrientation(Rot, new_orientation);
@@ -75,9 +74,7 @@ public class SensorData implements LocationListener,SensorEventListener{
 		y_axis=Calculator.calRatationY(gravity)	;
 		z_axis=Calculator.calRotationZ(gravity)	;
 		phonedata.setPhoneData((float)(orientation[0]*180/Math.PI),curLocation,x_axis,y_axis,z_axis);
-		//arview.ifThreadRun=true;
 	}
-	
 	
 	public void onLocationChanged(Location location) {
 		curLocation.setLatitude(location.getLatitude());
@@ -104,7 +101,6 @@ public class SensorData implements LocationListener,SensorEventListener{
 		sensorMan.registerListener(this,sensorMan.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 				SensorManager.SENSOR_DELAY_FASTEST);
 		locMan = (LocationManager) AR_Context.getSystemService(Context.LOCATION_SERVICE);
-		// set the miniTime and miniDistance here
 		locMan.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 2,this);
 		curLocation=locMan.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		if(curLocation==null)
@@ -117,8 +113,6 @@ public class SensorData implements LocationListener,SensorEventListener{
 		}
 		phonedata=new PhoneData(1,curLocation,0,0,0);
 			}
-
-	
 	
 	public void onStatusChanged(String provider, int status, Bundle extras) 
 	{

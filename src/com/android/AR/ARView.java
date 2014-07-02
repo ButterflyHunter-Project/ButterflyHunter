@@ -1,5 +1,4 @@
 package com.android.AR;
-
 import java.io.InputStream;
 import java.util.Random;
 import java.util.Enumeration;
@@ -34,44 +33,42 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.graphics.PorterDuff;
-//some other changes here haha
-public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSurfaceView is also a SurfaceView. It has a thread called 
-	//ARThread, which is used to refresh the display of the AR Elements.
+/*
+ARView contains all the virtual butterflies and includes a thread for drawing the butterflies.
+ * */
+public class ARView extends SurfaceView implements SurfaceHolder.Callback{
 	private Context AR_Context;
-	public ARThread AR_thread;
+	public ARThread AR_thread;//the thread for updating the surfaceview (redraw the butterflies)
 	private SurfaceHolder AR_holder;
-	public volatile boolean ifUpdate=false;
-	public volatile boolean ifGenerate=false;
+	public volatile boolean ifUpdate=false;//when ifUpdate=true, the list of butterflies should be updates (e.g. a butterfly was catched)
+	public volatile boolean ifGenerate=false;//when ifGenerate=true, generate new butterflies
 	private SurfaceHolder holder = null;
 	Paint mPaint = new Paint();	
 	public float screenWidth=10;
 	public float screenHeight=5;
 
 	//these two parameters need to be updated for different models
-	private float xAngleWidth = 50f;
+	private float xAngleWidth = 50f;//the anglewidth of the camera
 	private float yAngleWidth = 40f;
-	volatile LinkedList<BF> flyingList = new LinkedList<BF>();
-	volatile LinkedList<BF> catchedList = new LinkedList<BF>();
 
-	public final float threshold_Close2BF=15;
+
+	volatile LinkedList<BF> flyingList = new LinkedList<BF>();//list that contains flying (alive) butterflies
+	volatile LinkedList<BF> catchedList = new LinkedList<BF>();//list that contains catched butterfies
+
+	public final float threshold_Close2BF=15;//when distance of the butterfly is smaller than this threshold, catch it
 	public final int visible_range=100;//the range that the butterflys are visible
-	public volatile boolean ifThreadRun=false;
-	public SensorData sensor;
+	public volatile boolean ifThreadRun=false;//when ifThreadRun is set to true, the ARThread runs
+	public SensorData sensor;//data from the sensors
 
-	//ARThread
+	//ARThread for updating (redrawing) the canvas
 	public class ARThread extends Thread {
 		private SurfaceHolder _holder=null;
 		private Context _context;
 		public ARThread(SurfaceHolder surfaceHolder, Context context)
-		{			_holder = surfaceHolder;
-		_context = context;		}
+		{holder = surfaceHolder;_context = context;		}
 
 		public void setRunning(boolean b) 
-		{			ifThreadRun = b;		}
-
-		/* callback invoked when the surface dimensions change. */
-		// public void setSurfaceSize(int width, int height) {
-		// // synchronized to make sure these all change atomically
+		{ifThreadRun = b;}
 
 		@Override
 		public void run() {
@@ -84,13 +81,14 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 					synchronized (_holder) {
 						if(c!=null)
 						{
-							if(ifUpdate)
-							{	updateBFLists();
-							if (numOfBFWithinRange(visible_range)<3)
-								generateBF();}
+							if(ifUpdate){	
+								updateBFLists();
+								if (numOfBFWithinRange(visible_range)<3)
+									generateBF();
+							}
 							c.drawColor(0, Mode.CLEAR);
 							onDraw(c);
-							}
+						}
 					}
 				} 
 				finally {
@@ -125,7 +123,7 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 				scale=element.distance/distance;
 				rotation=y_axis;
 				if(Calculator.isPictureSizeOrRotationChanged(scale,y_axis))
-				picture_view_changed=true;				
+					picture_view_changed=true;				
 				float tem_orientation=location.bearingTo(element.location)-device_orientation-90;
 				if (tem_orientation>180) tem_orientation=tem_orientation-360;
 				if (tem_orientation<-180) tem_orientation=tem_orientation+360;
@@ -158,7 +156,8 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 			}
 		}
 	}
-	public void showInfoTab(int x, int y, Canvas c, BF element){
+	
+	public void showInfoTab(int x, int y, Canvas c, BF element){//shows the infoTab (distance, type, size, etc...) of the butterfly
 		if(element.isChecked){
 			Paint p=new Paint();
 			int delta=5;int text_height=40;int text_size=30;
@@ -177,6 +176,7 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 			c.drawText("Value        "+String.valueOf(element.value),left+delta,top+delta+text_size+2*text_height,p);
 		}
 	}
+	
 	public ARView(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
@@ -186,43 +186,20 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 		AR_thread=new ARThread(AR_holder,AR_Context);
 		sensor=new SensorData(context,this);
 		BF.deviceLocation=sensor.curLocation;
-		//		Bitmap picture;
-		//		BF element;
-		//		InputStream is1 =getResources().openRawResource(R.drawable.images);
-		//		picture = BitmapFactory.decodeStream(is1);
-		//		Location loc1=new Location("GPS");
-		//		loc1.setLatitude(sensor.curLocation.getLatitude()-0.0002);
-		//		loc1.setLongitude(sensor.curLocation.getLongitude());
-		//		loc1.setAltitude(sensor.curLocation.getAltitude());
-		//		element=new BF(AR_Context, loc1,picture,1) ;
-		//		element.picture_size = 1;
-		//		element.visible = true;
-		//		element.name = "first";
-		//		this.addBF(element);
 		generateBF();
-		//onDraw(canvas);
 	}
 
 
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,	int height) {}
 
 	public void surfaceCreated(SurfaceHolder holder) {
-		// start the thread here so that we don't busy-wait in run()
-		// waiting for the surface to be created
 		setWillNotDraw(false);
 		AR_thread.setRunning(true);
 		AR_thread.start();
 	}
 
-	/*
-	 * Callback invoked when the Surface has been destroyed and must no longer
-	 * be touched. WARNING: after this method returns, the Surface/Canvas must
-	 * never be touched again!
-	 */
 
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		// we have to tell thread to shut down & wait for it to finish, or else
-		// it might touch the Surface after we return and explode
 		try{
 			AR_thread.setRunning(false);
 			AR_thread.join();
@@ -235,14 +212,15 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 
 
 
-	public int numOfBF(){return flyingList.size();}
-	public int numOfBFWithinRange(int radious){
+	public int numOfBF(){return flyingList.size();}//get the number of butterflies that are flying
+	public int numOfBFWithinRange(int radious){//get the number of flying butterflies within a certain range
 		int num=0;
 		for (BF bf:flyingList){
 			if (bf.distance<radious) num++;
 		}
 		return num;
 	}
+	
 	public void updateBFLists(){//update both the flying and cathed lists
 		BF bf;
 		if (flyingList!=null)
@@ -255,9 +233,10 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 						catchBF(bf);
 				}
 	}
+	
 	public void generateBF(){
 		Random random=new Random();
-		int num=random.nextInt(2)+3;//number of butterflys to be generated
+		int num=random.nextInt(7)+3;//number of butterflys to be generated
 		double lati,longi;
 		Bitmap[] frames=new Bitmap[3];
 		BF element;
@@ -269,7 +248,7 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 		pictures[1] = BitmapFactory.decodeStream(is);
 		is=getResources().openRawResource(R.drawable.blue2);
 		pictures[2] = BitmapFactory.decodeStream(is);
-		
+
 		is=getResources().openRawResource(R.drawable.red0);
 		pictures[3] = BitmapFactory.decodeStream(is);
 		is=getResources().openRawResource(R.drawable.red1);
@@ -283,7 +262,7 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 		pictures[7] = BitmapFactory.decodeStream(is);
 		is=getResources().openRawResource(R.drawable.red2);
 		pictures[8] = BitmapFactory.decodeStream(is);
-		
+
 		is=getResources().openRawResource(R.drawable.five0);
 		pictures[9] = BitmapFactory.decodeStream(is);
 		is=getResources().openRawResource(R.drawable.five1);
@@ -294,15 +273,15 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 		for (int i=0;i<num;++i){
 			int BFNo=random.nextInt(4);
 			for(int j=0;j<3;++j)
-			frames[j]=pictures[BFNo*3+j];
-			
+				frames[j]=pictures[BFNo*3+j];
+
 			lati=(2*random.nextDouble()-1)/3000;
 			longi=(2*random.nextDouble()-1)/2000;
 			if (Math.abs(lati)<0.00015) lati=0.00015;
 			if (Math.abs(longi)<0.0002) longi=0.00015;
 			Location loc1=new Location("GPS");
 			loc1.setLatitude(sensor.curLocation.getLatitude()+lati);
-			loc1.setLongitude(sensor.curLocation.getLongitude());
+			loc1.setLongitude(sensor.curLocation.getLongitude()+longi);
 			loc1.setAltitude(sensor.curLocation.getAltitude());
 			element=new BF(AR_Context, loc1,frames,BFNo) ;
 			element.picture_size = 1;
@@ -310,6 +289,7 @@ public class ARView extends SurfaceView implements SurfaceHolder.Callback{//ARSu
 			this.addBF(element);
 		}
 	}
+	
 	public void catchBF(BF bf){
 		if(flyingList!=null&&catchedList!=null)
 		{	if(flyingList.contains(bf))

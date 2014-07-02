@@ -9,15 +9,16 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.graphics.ImageFormat;
-
-public class CameraView extends SurfaceView//the regular camera view 
+/*
+ the CameraView class includes a Camera object and opens the phone camera
+ */
+public class CameraView extends SurfaceView
 {
 	Camera camera;
 	SurfaceHolder previewHolder;
 	public int screenWidth;
 	public int screenHeight;
 
-	//Callback for the surfaceholder
 	SurfaceHolder.Callback surfaceHolderListener = new SurfaceHolder.Callback() {
 		public void surfaceCreated(SurfaceHolder holder) {
 			camera=Camera.open();

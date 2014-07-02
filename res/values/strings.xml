@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Butterfly Hunting!</string>
+    <string name="app_name">Butterfly Hunter</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="app_logo_top">Hunt the Butterflies~</string>
+    <string name="app_logo_top">Hunt the Butterflies</string>
     <string name="app_logo_bottom">Feel the Augmented Reality</string>
-    <string name="app_version_info">Version 1.0.0\nCopyright © 2014 xxxxxx(company name), Inc. All Rights Reserved.</string>
+    <string name="app_version_info">Version 1.0.0\nCopyright © 2014 Cong&Xiaojian. All Rights Reserved.</string>
     <string name="menu">Enjoy!</string>
     
     <string
